@@ -3,7 +3,6 @@ lines_list = [i.split() for i in read_lines]
 n = int(lines_list[0][0])
 # create variables
 variables = [i for i in range(1, n + 1)]  # n+1?
-print("variables = " + str(variables))
 
 # read parents
 parents_dict = dict.fromkeys(variables)
@@ -37,20 +36,16 @@ while k < len(lines_list) - 1:
         entry_false = str(child_id) + "_F"
         cond_prob_table[entry] = prob
         cond_prob_table[entry_false] = 1 - prob
-print("parents_dict = " + str(parents_dict))
-print("cond_prob_table = " + str(cond_prob_table))
 
 # calculate query joint probability
 read_query = [line.rstrip('\n') for line in open('query.txt')]
 query_list = read_query[0].split()
-print("query_list = " + str(query_list))
 joint_prob = 1
 
 for i in range(0, len(query_list)):
     cond = query_list[i]
     if cond == 'T':
         key = str(i + 1) + "_T"
-        print("key = " + str(key))
         if parents_dict[i + 1] == 0:
             # print("Multiplying joint_prob = " + str(joint_prob) + " by cond_prob_table[key] =" + str(
             #     cond_prob_table[key]))
@@ -64,7 +59,6 @@ for i in range(0, len(query_list)):
             for parent in parents_dict[child]:
                 conditions = conditions + "_" + str(query_list[int(parent) - 1])
             read_key = str(child) + "_" + str(parents) + str(conditions)
-            print("read_key = " + str(read_key))
             # print("Multiplying joint_prob = " + str(joint_prob) + " by cond_prob_table[read_key] =" + str(
             #     cond_prob_table[read_key]))
             joint_prob = joint_prob * cond_prob_table[read_key]
@@ -74,7 +68,6 @@ for i in range(0, len(query_list)):
             print("Unknown number of parents for this child" + str(i + 1))
     else:
         key = str(i + 1) + "_F"
-        print("key = " + str(key))
 
         if parents_dict[i + 1] == 0:
             # print("Multiplying joint_prob = " + str(joint_prob) + " by cond_prob_table[key] =" + str(
@@ -89,7 +82,6 @@ for i in range(0, len(query_list)):
             for parent in parents_dict[child]:
                 conditions = conditions + "_" + str(query_list[int(parent) - 1])
             read_key = str(child) + "_F_" + str(parents) + str(conditions)
-            print("read_key = " + str(read_key))
             # print("Multiplying joint_prob = " + str(joint_prob) + " by cond_prob_table[read_key] =" + str(
             #     cond_prob_table[read_key]))
             joint_prob = joint_prob * cond_prob_table[read_key]
@@ -98,5 +90,4 @@ for i in range(0, len(query_list)):
         else:
             print("Unknown number of parents for this child" + str(i + 1))
 
-print("joint_prob = " + str(joint_prob))
-print("Formatted Number: "+"{:.6f}".format(joint_prob))
+print("{:.6f}".format(joint_prob))
